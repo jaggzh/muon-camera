@@ -10,18 +10,46 @@ import matplotlib.pyplot as plt
 import kbnb
 from imgbuf import *
 
-def pauser():
-	plt.pause(0.4)
-kbnb.init(cb=pauser)
+# User settings
 
 iw=352
 ih=288
-frame = Frame('/dev/video0')
+vdev="/dev/video0"
+
+# Code:
+#  Touch me and you'll understand what happiness is.
+#  Look, a new day has begun.
+#    - "Memory", Cats
+
+def pauser():
+	plt.pause(0.1) # My cheap camera fails sometimes. This slower
+	               # framerate seems to help.
+kbnb.init(cb=pauser)
+
+print('''
+* Please make sure to set your camera resolution
+  in muon-camera.py
+* Also, set your video device (default /dev/video0)
+* Hit h and l to adjust the threshold multiplier
+  (Lower (h) gives more frequent updates
+* While it waits for some initial frames, it otherwise
+  begins right away, so it doesn't have a proper average for the
+  brightness peaks. The end result is you get some images
+  showing quickly, then they should reduce in frequency.
+''')
+avg_over=5 # Number of frames for averaging, to remove noise.
+           # This same count is used for figuring out the
+		   # threshold of peak brightness. (I currently keep
+		   # those entire images, but I could just keep their
+		   # sums for detecting peaks. Should fix that later.)
+
+
+frame = Frame(vdev)
 pltimg = None
 plt.ion()
 	#def __init__(self, dims=None, count=None, dtype=np.uint8):
-imgsbuf = ImageBuf(dims=(ih,iw,3), count=5)
-diffbuf = ImageBuf(dims=(ih,iw,3), count=5)
+imgsbuf = ImageBuf(dims=(ih,iw,3), count=avg_over)
+diffbuf = ImageBuf(dims=(ih,iw,3), count=avg_over)
 framecount=0
 anomalycount=0
 #thresh = 217000
@@ -32,7 +60,7 @@ while True:
 	img = np.frombuffer(imgd, dtype=np.uint8)
 	img = img.reshape((ih,iw,3))
 	imgsbuf.add(img)
-	if framecount > 5:
+	if framecount > avg_over:
 		if pltimg is None:
 			pltimg = plt.imshow(img, vmin=0, vmax=255)
 			#pltimg = plt.imshow(imgsbuf.avg(), vmin=0, vmax=255)
@@ -47,7 +75,8 @@ while True:
 			#print("Sum={}, Thresh={}, TMult={}".format(pimgsum, thresh, thresh*tmult))
 			if pimgsum > thresh*tmult:
 				anomalycount += 1
-				print("Sum {} > thresh of {}".format(pimgsum, thresh*tmult))
+				print("Sum {:.2f} > thresh of {:.2f}".format(\
+					pimgsum, thresh*tmult))
 				#pltimg.set_data(pimg)
 				pimg = (255*(pimg/pimg.max())).astype(np.uint8)
 				pltimg.set_data(pimg)
