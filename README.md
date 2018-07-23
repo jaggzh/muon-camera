@@ -26,8 +26,6 @@ I'm using my worst camera currently, and get mostly noise. Even the bright speck
 - Hit h and l to decrease/increase the threshold. Lower (h) gives more frequent updates
 - Hit q to quit and never return.
 
-## Tips:
-
 ## Note:
 It normalizes images, so very dark noisy images will show their noise.
 
