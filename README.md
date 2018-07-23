@@ -17,10 +17,15 @@ I'm using my worst camera currently, and get mostly noise. Even the bright speck
 - pip3 install pyv4l2 (and maybe also v4l2)
 
 ## Run
-- Run v4l2-ctl --list-formats-ext to see the resolutions
-- You'll need to set your resolution in muon-camera.py by hand for now. Sorry. It loads a single raw string of data (width*height*channels) with pyv4l2, and relies on your resolution to make it into the proper-shaped array.
-- Run muon-camera.py.
+- Run v4l2-ctl --list-formats-ext to see your cam's resolutions
+- Set resolution: You'll need to set your resolution in muon-camera.py by hand for now. Sorry. It loads a single raw string of data (width*height*channels) with pyv4l2, and relies on your resolution to make it into the proper-shaped array. It does NOT set this resolution, so you need to make sure you got it right.
+- Set your video device, also, in muon-camera.py
+- Cover your camera so it doesn't receive visible light. (Alternatively, point it at normal things and you'll see the effects of the averaging and differencing.)
+- Run muon-camera.py
 - Hit h and l to decrease/increase the threshold. Lower (h) gives more frequent updates
+- Hit q to quit and never return.
+
+## Tips:
 
 ## Note:
 It normalizes images, so very dark noisy images will show their noise.
