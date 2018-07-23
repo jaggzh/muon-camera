@@ -14,7 +14,8 @@ I'm using my worst camera currently, and get mostly noise. Even the bright speck
 
 ## Dependencies
 - Python3
-- pip3 install pyv4l2 (and maybe also v4l2)
+- numpy, and matplotlib and PIL for image display
+- Also: pip3 install pyv4l2 (and maybe also v4l2)
 
 ## Run
 - Run v4l2-ctl --list-formats-ext to see your cam's resolutions
